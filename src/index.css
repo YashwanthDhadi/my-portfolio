@@ -1,0 +1,156 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+/* Design tokens: every colour on the site comes from here. */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+  --color-border-strong: #cbd5e1;
+  --color-ink: #0f172a;
+  --color-body: #334155;
+  --color-muted: #64748b;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-soft: #eff6ff;
+  --color-accent-ring: #bfdbfe;
+  /* Text on solid accent backgrounds (primary buttons). */
+  --color-on-accent: #ffffff;
+  /* Hero headline: a step softer than headings. */
+  --color-ink-soft: #475569;
+  --color-dots: #cbd5e1;
+  --color-success: #10b981;
+
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04);
+  --shadow-card-hover: 0 8px 24px -8px rgb(15 23 42 / 0.12);
+  --shadow-photo: 0 20px 50px -20px rgb(15 23 42 / 0.35);
+}
+
+/*
+ * Dark theme. The toggle sets data-theme on <html>; an inline script in
+ * index.html applies the saved or system preference before first paint.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #0b1120;
+  --color-bg-subtle: #0f1729;
+  --color-surface: #131c31;
+  --color-border: #1e293b;
+  --color-border-strong: #334155;
+  --color-ink: #f1f5f9;
+  --color-body: #cbd5e1;
+  --color-muted: #94a3b8;
+  --color-accent: #60a5fa;
+  --color-accent-hover: #93c5fd;
+  --color-accent-soft: #172554;
+  --color-accent-ring: #1e40af;
+  --color-on-accent: #0b1120;
+  --color-ink-soft: #cbd5e1;
+  --color-dots: #1e293b;
+  --color-success: #34d399;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-card-hover: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  --shadow-photo: 0 20px 50px -20px rgb(0 0 0 / 0.8);
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* Smooth colour change when switching theme (not on first load). */
+:root.theme-transition,
+:root.theme-transition *,
+:root.theme-transition *::before,
+:root.theme-transition *::after {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    fill 0.25s ease !important;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Keeps section headings clear of the sticky navbar. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-body antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-ink;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-accent-ring text-ink;
+  }
+
+  :focus-visible {
+    @apply rounded-sm outline-2 outline-offset-2 outline-accent;
+  }
+
+  /* Stop the page scrolling behind an open project dialog. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* Project dialog entrance. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+.project-dialog[open] {
+  animation: dialog-in 0.22s ease-out;
+}
+.project-dialog[open]::backdrop {
+  animation: backdrop-in 0.22s ease-out;
+}
+/* ::backdrop doesn't reliably inherit custom properties, so set colours directly. */
+.project-dialog::backdrop {
+  background: rgb(15 23 42 / 0.4);
+  backdrop-filter: blur(2px);
+}
+:root[data-theme='dark'] .project-dialog::backdrop {
+  background: rgb(2 6 23 / 0.7);
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-dialog[open],
+  .project-dialog[open]::backdrop {
+    animation: none;
+  }
+}
